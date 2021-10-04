@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-setwd(dir = "C:/Users/Thomas.Oliver/WORK/Projects/SCLERA/2021_Final_Data/Final Data Push GD/")
+setwd(dir = "/Users/Melissa/Desktop/GitHub/SCLERA_Tutuila_Thermotolerance/Code/")
 rm( list = ls())
 #graphics.off()
 library(reshape2)
@@ -23,30 +23,31 @@ library(mgcv)
 library(MuMIn)
 library(emmeans)
 library(dplyr)
+library(ggplot2)
 ```
 Load data, join together  
 
 ```{r}
-site2014=read.csv("C:/Users/Thomas.Oliver/WORK/Projects/SCLERA/2021_Final_Data/2014/raw/ThermalResistance_SpeciesBySite.csv")
+site2014=read.csv("../Data/ThermalResistance_SpeciesBySite.csv")
 site2014$season=substr(site2014$Species.Site.Season,nchar(site2014$Species.Site.Season)-1,nchar(site2014$Species.Site.Season))
 
-LD50_2014 <- read.csv("2014_ColonyOutput_Assays_SCLERA.csv")
+LD50_2014 <- read.csv("../Data/2014_Thermotolerance.csv")
 LD50_2014 <- LD50_2014[LD50_2014$Species == "Acropora hyacinthus",]
 LD50_2014$LBSP_Cat=site2014$LBSP_Category[match(LD50_2014$Site,site2014$Site)]
-LD50_2019 <- read.csv("2019_UniqueColony_SCLERAModeling_v1.5.csv")
+LD50_2019 <- read.csv("../Data/2019_Thermotolerance.csv")
 LD50_2019$Site_Col <- paste0(LD50_2019$Site,"_",LD50_2019$Colony)
 LD50_2019$Site <- NULL
 LD50_2019$LBSP <- NULL
 LD50_2019$pop2016 <- NULL
 ddply(symbiont_2014,.())
 
-symbiont_2014 <- read.csv("2014_fromtom_symbiont_log_ratios_allsites_08_05_21_LBSP.csv")
+symbiont_2014 <- read.csv("../Data/2014_SymbiontRatios.csv")
 symbiont_2014$Site <- NULL
 symbiont_2014$Season <- NULL
-symbiont_2019 <- read.csv("2019_symbiont_log_ratios_08_05_21_LBSP.csv")
+symbiont_2019 <- read.csv("../Data/2019_SymbiontRatios.csv")
 symbiont_2019$Site_Col <- paste0(symbiont_2019$Site,"_",symbiont_2019$Colony)
 
-GE_controls_2019 <- read.csv("eignegenes_controls.csv")
+GE_controls_2019 <- read.csv("../Data/2019_baseline_eigengene_expression.csv")
 GE_controls_2019$Site_Col <- paste0(GE_controls_2019$Site,"_",GE_controls_2019$Rep)
 GE_controls_2019$Site <- NULL
 
