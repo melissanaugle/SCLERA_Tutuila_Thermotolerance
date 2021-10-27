@@ -13,7 +13,7 @@ Includes all CBASS acute heat stress assay measurements, as well as all predicti
 Includes raw qPCR data, clean symbiont ratio data, and additional symbiont analyses not included in the publication. 
 
 ## 3. RNAseq: 
-Includes pipeline to check QC, map to reference and create counts matrix in Bash. Also includes EdgeR scripts, GO analysis using GO_MWU, and WGCNA to examine baseline and heat stress gene expression modules. In the WGCNA folder within RNAseq, you may find the code to produce **Figures 4 and S6**. Raw reads may be found on the NCBI Sequence Read Archive (SRA) database (Bioproject accession: PRJNA762371; SRA accession: SRP339664). <https://www.ncbi.nlm.nih.gov/bioproject/762371>
+Includes pipeline to check QC, map to reference and create counts matrix in Bash. Also includes EdgeR scripts and WGCNA to examine baseline and heat stress gene expression modules. In the WGCNA folder within RNAseq, you may find the code to produce **Figures 4 and S6**. Raw reads may be found on the NCBI Sequence Read Archive (SRA) database (Bioproject accession: PRJNA762371; SRA accession: SRP339664). <https://www.ncbi.nlm.nih.gov/bioproject/762371>
 
 ## 4. LabProtocols:
 Includes protocols for DNA and RNA extractions, cDNA library prep, and RNAlater homebrew recipe. 
