@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-setwd(dir = "/Users/Melissa/Desktop/GitHub/SCLERA_Tutuila_Thermotolerance/Code/")
+setwd(dir = "/Users/Melissa/Desktop/GitHub/SCLERA_Tutuila_Thermotolerance/Thermotolerance/")
 rm( list = ls())
 #graphics.off()
 library(reshape2)
@@ -28,26 +28,26 @@ library(ggplot2)
 Load data, join together  
 
 ```{r}
-site2014=read.csv("../Data/ThermalResistance_SpeciesBySite.csv")
+site2014=read.csv("ThermalResistance_SpeciesBySite_2014.csv")
 site2014$season=substr(site2014$Species.Site.Season,nchar(site2014$Species.Site.Season)-1,nchar(site2014$Species.Site.Season))
 
-LD50_2014 <- read.csv("../Data/2014_Thermotolerance.csv")
+LD50_2014 <- read.csv("2014_Thermotolerance.csv")
 LD50_2014 <- LD50_2014[LD50_2014$Species == "Acropora hyacinthus",]
 LD50_2014$LBSP_Cat=site2014$LBSP_Category[match(LD50_2014$Site,site2014$Site)]
-LD50_2019 <- read.csv("../Data/2019_Thermotolerance.csv")
+LD50_2019 <- read.csv("2019_Thermotolerance.csv")
 LD50_2019$Site_Col <- paste0(LD50_2019$Site,"_",LD50_2019$Colony)
 LD50_2019$Site <- NULL
 LD50_2019$LBSP <- NULL
 LD50_2019$pop2016 <- NULL
 ddply(symbiont_2014,.())
 
-symbiont_2014 <- read.csv("../Data/2014_SymbiontRatios.csv")
+symbiont_2014 <- read.csv("../Symbionts/2014_SymbiontRatios.csv")
 symbiont_2014$Site <- NULL
 symbiont_2014$Season <- NULL
-symbiont_2019 <- read.csv("../Data/2019_SymbiontRatios.csv")
+symbiont_2019 <- read.csv("../Symbionts/2019_SymbiontRatios.csv")
 symbiont_2019$Site_Col <- paste0(symbiont_2019$Site,"_",symbiont_2019$Colony)
 
-GE_controls_2019 <- read.csv("../Data/2019_baseline_eigengene_expression.csv")
+GE_controls_2019 <- read.csv("../RNAseq/2019_baseline_eigengene_expression.csv")
 GE_controls_2019$Site_Col <- paste0(GE_controls_2019$Site,"_",GE_controls_2019$Rep)
 GE_controls_2019$Site <- NULL
 
@@ -156,22 +156,19 @@ CD_V19=ggplot(data_p19,aes(LBSP_Cat,CDratio_log2,fill=LBSP_Cat))+
 MortsB=MortB+Assay19B+plot_layout(widths = c(2,1))
 CDB=CD_B14+CD_B19+plot_layout(widths = c(2,1))
 sc=1.1
-ggsave(filename = "Mortality BoxPlots.jpg",plot = MortsB,height=sc*11/3,width=sc*8)
+ggsave(filename = "Thermotol_BoxPlots_Figure2.jpg",plot = MortsB,height=sc*11/3,width=sc*8)
 CDB
-ggsave(filename = "CD BoxPlots.jpg",plot = CDB,height=sc*11/3,width=sc*8)
+ggsave(filename = "CD_BoxPlots_Figure3.jpg",plot = CDB,height=sc*11/3,width=sc*8)
 
 MortsV=MortV14+Assay19V+plot_layout(widths = c(2,1))
-ggsave(filename = "Mortality ViolinPlots.jpg",plot = MortsV,height=sc*11/3,width=sc*8)
+ggsave(filename = "Mortality_ViolinPlots.jpg",plot = MortsV,height=sc*11/3,width=sc*8)
 CDV=CD_V14+CD_V19+plot_layout(widths = c(2,1))
-ggsave(filename = "CD ViolinPlots.jpg",plot = CDV,height=sc*11/3,width=sc*8)
+ggsave(filename = "CD_ViolinPlots.jpg",plot = CDV,height=sc*11/3,width=sc*8)
 MortsV/CDV
+```
 
 
-########################################
-#######################################
-
-
-
+```{r }
 ####
 # Finding #1: Without C/D data, high pollution sites and hot seasons have higher thermal tolerance.
 ####
@@ -196,10 +193,16 @@ tab_df(f1,
        show.rownames = T,
        alternate.rows = T, # this colors the rows
        title = "Thermotolerance in 2014", #always give
-       file = "InitalThermoTolerance_2014.doc")
+       file = "InitalThermoTolerance_2014_Table1.doc")
 
+f1
 #Overall effect of LBSP on MortDD significant at 95%, Season*LBSP emmeans non-overlapping at 80% confidence
+```
 
+
+
+
+```{r }
 ######
 #Finding #2: Clade D associated with Higher Pollution Sites. Low-Mod delta 2.5 : -15.4; Mod-High -15.4:-19.9
 #Finding #3: Clade D increases between 2014 and 2019.
@@ -219,7 +222,7 @@ tab_df(f2,
        show.rownames = T,
        alternate.rows = T, # this colors the rows
        title = "C:D Ratio across Years and LBSP Categories", #always give
-       file = "CD_Shift_LBSP.doc")
+       file = "CD_Shift_LBSP_Table3.doc")
 
 
 cds_em=emmeans(cdshiftmod,~ Year|LBSP_Cat)
@@ -231,7 +234,9 @@ cds %>% group_by(LBSP_Cat) %>% summarize(mn=mean(emmean,na.rm=T))
 m2014_lm_noCD <- lmer(MortDegDays ~ Season + LBSP_Cat +  (1|Site), data =  data_2014)
 r.squaredGLMM(m2014_lm_noCD)
 #52.0% marginal R2
+```
 
+```{r }
 ####
 # Finding #4: For subset of samples with CD data, best 2014 model includes both CD and LBSP
 # 46.90% marginal R2
@@ -252,7 +257,7 @@ tab_df(f3,
        show.rownames = T,
        alternate.rows = T, # this colors the rows
        title = "Final 2014 Model: Season, LBSP Category, and Log2 C:D Ratio", #always give
-       file = "Final_2014.doc")
+       file = "Final_2014_Table4.doc")
 
 anova(m2014_lm_noLBSP)
 r.squaredGLMM(m2014_lm_noLBSP)
@@ -276,7 +281,9 @@ ggplot()+
   scale_color_manual(values = c("darkgreen","gold","darkred"),guide=F)+
   scale_shape_manual(values=c(21,24))+
   theme_bw()
+```
 
+```{r }
 ####
 # Finding #5: 2014 best model has almost no power in 2019: 3.90% marginal R2
 # #5b (inlcuding for those samples with expression data...)
@@ -293,7 +300,7 @@ tab_df(f4,
        show.rownames = T,
        alternate.rows = T, # this colors the rows
        title = "Final 2014 Model Applied to 2019: Little Explanatory Power", 
-       file = "Final_2019.doc")
+       file = "Final_2019_Table2.doc")
 data_2019ex=subset(data_2019,!is.na(MEantiquewhite4))
 dim(data_2019ex) #N=18
 
@@ -302,8 +309,9 @@ summary(m2019_lm_Allex)
 anova(m2019_lm_Allex)
 r.squaredGLMM(m2019_lm_Allex)
 #8.80% marginal R2
+```
 
-
+```{r }
 ####
 # Finding #6: 2019 Expression Data does better than c/d site level data
 ####
@@ -341,11 +349,14 @@ tab_df(f5,
        show.rownames = T,
        alternate.rows = T, # this colors the rows
        title = "Final Gene Expression Prediction Model", 
-       file = "Final_GE_2019.doc")
+       file = "Final_GE_2019_Table5.doc")
 
 r.squaredGLMM(m2019_lm_3Cmod)
+```
 
+#previous modeling for 2014
 
+```{r }
 # #continue here with lmer similar model to gam 
 # m2014_lm_full <- lmer(MortDegDays ~ D_prop_as + Season + LBSP_Cat +  (1|Site), data =  data_2014)
 # m2014_lm_full <- lmer(MortDegDays ~ D_prop + Season + LBSP_Cat +  (1|Site), data =  data_2014)
@@ -453,11 +464,6 @@ r.squaredGLMM(m2019_lm_3Cmod)
 
 #Modeling 2019
 
-Notes:
-overfitting an issue? rule: n/10 -> so should use ~4 variables since n = 38 
-don't rely on step -> instead use train test (80% to train, then test using remaining 20%)
-get r2 -> randomize and bootstrap 10,000 times and get distribution 
-
 ```{r }
 #GAM first 
 
@@ -487,7 +493,7 @@ AIC(m2019_gam_4mod, m2019_gam_nothist,m2019_gam_nopurp,m2019_gam_notur, m2019_ga
 
 
 
-Train test model for 2019 GE data 
+#Train test model for 2019 GE data 
 
 ```{r}
 #Generate a relatively small data set N~100
@@ -553,58 +559,3 @@ abline(v=median(TrainOut$Fullmod.rsq,na.rm=T),col="red")
 
 ```
 
-
-########################################################################################
-
-
-#Plot symbiont community by thermotolerance (Fig 6a from report)
-
-Weird that 2014 has so many 100% D colonies, but report doesn't show that? 
--fig 6a high thermotol,low C points are mostly high pollution, maybe driven by Cannery data that we do not have here?
-
-Though it still looks like more of a trend in 2014 compared to 2019 ?
-
-```{r}
-#2014
-g14 <- ggplot(data_2014, aes(x= CDratio_log, y = MortDegDays ,col = LBSP
-                             )) + geom_point(size = 5) + xlab("Log C:D Ratio \n left = more D, right = more C") + ylab("MortDegDays \n higher = more thermotol") + theme_bw() + ggtitle("2014 Log C:D ratio by Mortality in Degree Days") + geom_smooth(method=loess) + xlim(-21,21)
-#tried method = gam here and looks almost linear 
-
-#2019
-g19 <- ggplot(data_2019, aes(x= CDratio_log, y = Phenotype.X0.mn ,col = LBSP
-                             )) + geom_point(size = 5) + xlab("Log C:D Ratio \n left = more D, right = more C") + ylab("Two-metric thermotolerance \n higher = more thermotol") + theme_bw() + ggtitle("2019 Log C:D ratio by two-metric thermotolerance")  + xlim(-21,21) # + geom_smooth(method= gam)
-#tried method = loess here and won't plot 
-
-g14+g19
-
-```
-Try proportion C / D instead of ratio
-
-```{r}
-#2014
-g14 <- ggplot(data_2014, aes(x= C_prop, y = MortDegDays #,col = Site
-                             )) + geom_point(size = 5) + xlab("Proportion C") + ylab("MortDegDays \n higher = more thermotol") + theme_bw() + ggtitle("2014 Log C:D ratio by Mortality in Degree Days") + geom_smooth(method=gam) 
-
-#2019
-g19 <- ggplot(data_2019, aes(x= C_prop, y = Phenotype.X0.mn #,col = Site
-                             )) + geom_point(size = 5) + xlab("Log C:D Ratio \n left = more D, right = more C") + ylab("Two-metric thermotolerance \n higher = more thermotol") + theme_bw() + ggtitle("2019 Log C:D ratio by two-metric thermotolerance") + geom_smooth(method=gam) + xlim(0,1)
-
-g14+g19
-
-```
-
-
-Try removing the 100% C and 100% D colonies to recreate 6a?
-
-Then try using MortTemp instead of MortDegDays
-
-```{r}
-#2014
-
-data_2014_test <- data_2014[!data_2014$CDratio_log == -20,]
-data_2014_test <- data_2014_test[!data_2014_test$CDratio_log == 20,]
-ggplot(data_2014_test, aes(x= CDratio_log, y = MortDegDays)) + geom_point(size = 5) + xlab("Log C:D Ratio \n left = more D, right = more C") + ylab("MortDegDays \n higher = more thermotol") + theme_bw() + ggtitle("2014 Log C:D ratio by Mortality in Degree Days") + stat_smooth(method=gam)
-
-ggplot(data_2014, aes(x= CDratio_log, y = MortTemp)) + geom_point(size = 5) + xlab("Log C:D Ratio \n left = more D, right = more C") + ylab("MortTemp \n higher = more thermotol") + theme_bw() + ggtitle("2014 Log C:D ratio by Mortality Temperature") + stat_smooth(method=gam)
-
-```
