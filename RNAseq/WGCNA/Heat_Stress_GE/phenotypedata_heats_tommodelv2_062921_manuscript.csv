@@ -1,0 +1,20 @@
+Sample,Low Pollution,Mod Pollution,High Pollution,Symbionts C+D,Symbionts D only,Top 10 Thermotol.,Top 20 Thermotol.,Top 30 Thermotol.,Bottom 10 Thermotol.,Bottom 20 Thermotol.,Bottom 30 Thermotol.
+CoPt_H_rep1,0,0,1,0,1,0,0,0,0,0,0
+CoPt_H_rep2,0,0,1,0,1,0,0,0,0,0,0
+CoPt_H_rep3,0,0,1,0,1,0,0,0,0,0,0
+CoPt_H_rep4,0,0,1,0,1,0,0,0,0,1,1
+Falu_H_rep1,0,1,0,0,1,0,0,0,0,0,0
+Falu_H_rep4,0,1,0,0,1,0,0,0,1,1,1
+Falu_H_rep6,0,1,0,0,1,0,0,0,0,0,0
+Ftele_H_rep1,1,0,0,1,0,0,0,0,1,1,1
+Ftele_H_rep3,1,0,0,1,0,0,0,0,0,0,0
+Ftele_H_rep5,1,0,0,1,0,1,1,1,0,0,0
+Ftele_H_rep6,1,0,0,1,0,0,0,0,0,0,1
+Can_H_rep2,0,0,1,0,1,0,0,1,0,0,0
+Can_H_rep3,0,0,1,0,1,0,0,0,0,0,1
+Can_H_rep5,0,0,1,0,1,0,0,1,0,0,0
+Can_H_rep6,0,0,1,0,1,0,0,1,0,0,0
+Vat_H_rep1,0,1,0,0,1,0,1,1,0,0,0
+Vat_H_rep3,0,1,0,0,1,0,0,0,0,0,1
+Vat_H_rep4,0,1,0,0,1,0,1,1,0,0,0
+Vat_H_rep6,0,1,0,1,0,1,1,1,0,0,0
