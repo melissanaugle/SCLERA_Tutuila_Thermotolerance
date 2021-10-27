@@ -1,0 +1,144 @@
+---
+title: "qPCR analysis"
+author: "Melissa Naugle"
+date: "3/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+setwd(dir = "~/Desktop/GitHub/SCLERA_Tutuila_Thermotolerance/Symbionts/")
+rm( list = ls())
+graphics.off()
+library(ggplot2)
+library(ggpubr)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(reshape2)
+library(mosaic)
+library(RColorBrewer)
+library(DescTools)
+library(epitools)
+library(patchwork)
+```
+
+
+# Read in data
+
+## 2019 first 
+
+```{r readdata}
+dat1 <- read.csv("qPCR_data/2019data/08_05_20_fields1-4.csv")
+dat2 <- read.csv("qPCR_data/2019data/10_14_20_fields5-8.csv")
+dat3 <- read.csv("qPCR_data/2019data/12_14_20_redos.csv")
+
+dat <- rbind(dat1,dat2)
+nrow(dat)
+
+#remove and replace with redos 
+dat<-dat[!(dat$Sample=="Alu_F2" | dat$Sample=="TeleF5" | dat$Sample=="VatiaF6"),]
+
+#AluF4 had only 1/3 amplify 
+dat3 <- dat3[!(dat3$Sample=="AluF4"),]
+dat3$Starting.Quantity..SQ. <- NULL
+dat <- rbind(dat,dat3)
+
+head(dat)
+dat$FAM <- as.numeric(dat$FAM)
+dat$VIC <- as.numeric(dat$VIC)
+dat <- dat[!(dat$Sample=="NC"),]
+
+dat$Site = "n"
+
+dat <- mutate(dat, Site = derivedFactor(
+  "Faga'tele" = (grepl("Tele", dat$Sample)),
+  "Faga'alu" = (grepl("Alu", dat$Sample)),
+  "Vatia" = (grepl("Vat", dat$Sample)),
+  "Cannery" = (grepl("Can", dat$Sample)),
+  "Coconut Point" = (grepl("Coco", dat$Sample)),
+  .default = NA
+))
+
+dat <- dat[!is.na(dat$Site),]
+```
+
+# make figures
+
+```{r }
+dat_trip <- dat %>%
+  group_by(Sample, Site) %>%
+  summarize(FAM_mean = mean(FAM, na.rm = TRUE), VIC_mean = mean(VIC, na.rm = TRUE))
+
+#look at data
+dat_trip
+
+#use this formula to calculate cell number for C and D
+#divide by cell copy number 
+dat_trip$cellnum_C <- (2^(40 - dat_trip$VIC_mean)) / 9
+dat_trip$cellnum_C[is.na(dat_trip$VIC_mean)] <- (2^(40-10000000000000))
+dat_trip$cellnum_D <- (2^(40 - dat_trip$FAM_mean)) / 1
+
+
+#look at data
+dat_trip
+
+#calculate proportion of C and D
+dat_trip$D_prop <- dat_trip$cellnum_D / (dat_trip$cellnum_C + dat_trip$cellnum_D)
+dat_trip$C_prop <- dat_trip$cellnum_C / (dat_trip$cellnum_C + dat_trip$cellnum_D)
+
+#look at data
+dat_trip
+
+#calculate C to D ratio
+dat_trip$CDratio_log <- log(dat_trip$cellnum_C / dat_trip$cellnum_D)
+
+#look at data
+dat_trip
+
+#choose bottom baseline for 100% D
+dat_trip$CDratio_log[dat_trip$CDratio_log == -Inf] <- -20
+dat_trip
+
+colors = c("royalblue2", "palegreen2", "lightblue", "tomato3", "firebrick4")
+
+#plot C:D log ratio
+ggplot(dat_trip, aes(x = Site, y = CDratio_log, fill = Site)) + geom_violin() + theme_bw() + ylab("Log Cladocopium:Durisdinium Ratio") + xlab("") + geom_point(shape = 21, position = position_jitter(width = 0.001), size = 3.5, aes(fill = Site))  +theme(text=element_text(size=15), axis.text.x = element_text(angle = 45, hjust = 1), axis.title.x = element_text(size = 15))+ scale_x_discrete(limits = c("Faga'tele","Vatia" ,"Faga'alu","Cannery","Coconut Point" ))+ scale_color_manual(values = colors) + scale_fill_manual(values = colors)
+#ggsave("CDratio_2019.png", width = 7, height = 5)
+
+
+dat_ratio <- dat_trip %>%
+  group_by(Sample) %>%
+  summarize(D_prop = (D_prop), C_prop = (C_prop))
+
+dat_ratio <- gather(dat_ratio, "Species", "Ratio", 2:3)
+dat_ratio$logRatio <- dat_ratio$Ratio
+
+#plot props for each coral
+ggplot(dat_ratio, aes(x = Sample, y = logRatio, fill = Species)) + geom_col() + theme_bw()  + ylab("Log Proportion of Durisdinium and Cladocopium") + scale_fill_manual(labels = c("Cladocopium", "Durisdinium"), values = c("violetred2", "royalblue3")) + xlab("") + theme(legend.title = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+#ggsave("CDproportions_eachcoral_2019.png", width = 6, height = 4)
+
+dat_ratio_means <- dat_trip %>%
+  group_by(Site) %>%
+  summarize(D_prop_avg = mean(D_prop), C_prop_avg = mean(C_prop))
+
+dat_ratio_means <- gather(dat_ratio_means, "Species", "Ratio", 2:3)
+dat_ratio_means$logRatio <- dat_ratio_means$Ratio
+
+
+#plots mean proportions for each site
+ggplot(dat_ratio_means, aes(x = Site, y = logRatio, fill = Species)) + geom_col() + theme_bw()  + ylab("Log Proportion of Durisdinium and Cladocopium") + scale_fill_manual(labels = c("Cladocopium", "Durisdinium"), values = c("violetred2", "royalblue3")) + xlab("") + theme(legend.title = element_blank())+ scale_x_discrete(limits = c("Faga'tele","Vatia" ,"Faga'alu","Cannery","Coconut Point" ))
+#ggsave("CDproportions_2019.png", width = 6, height = 4)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
