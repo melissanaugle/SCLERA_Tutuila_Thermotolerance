@@ -22,4 +22,4 @@ Includes protocols for DNA and RNA extractions, cDNA library prep, and RNAlater 
 Includes raw temperature data taken in 2019 in Tutuila. Also includes script and figure of plotted data. 
 
 For questions or additional data/scripts, contact Melissa Naugle: <br>
-mnaugle@csumb.edu or nauglems@yahoo.com
+melissasnaugle@gmail.com
