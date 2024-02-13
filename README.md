@@ -4,6 +4,8 @@ This repository includes all data and code associated with the publication:
 
 Naugle MS, Oliver TA, Barshis DJ, Gates RD and Logan CA (2021) Variation in Coral Thermotolerance Across a Pollution Gradient Erodes as Coral Symbionts Shift to More Heat-Tolerant Genera. Front. Mar. Sci. 8:760891. doi: 10.3389/fmars.2021.760891
 
+https://www.frontiersin.org/articles/10.3389/fmars.2021.760891/full 
+
 The repository is organized in multiple parts:
 
 ## 1. Thermotolerance: 
